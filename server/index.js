@@ -55,7 +55,42 @@ app.post("/insert", (req, res) => {
   });
 });
 
+// 게시글 조회 
+app.get("/getPost/:id", (req, res) => {
+  const id = req.params.id; // 파라미터로 전달된 게시글 ID를 가져옴
+
+  // 게시글 ID로 데이터 조회하는 쿼리
+  const sqlQuery =
+    "SELECT BOARD_TITLE, BOARD_CONTENT, UPDATER_ID, REGISTER_ID FROM BOARD WHERE BOARD_ID = ?;";
+  db.query(sqlQuery, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send(result[0]);
+    }
+  });
+});
+
 // 게시글 수정
+app.post("/update", (req, res) => {
+  const id = req.body.id; // 요청 바디에서 수정할 게시글 ID를 가져옴
+  const title = req.body.title; // 요청 바디에서 수정할 게시글 제목을 가져옴
+  const content = req.body.content; // 요청 바디에서 수정할 게시글 내용을 가져옴
+  const updaterId = req.body.updaterId; // 요청 바디에서 수정한 사용자 ID를 가져옴
+  // 게시글 정보를 수정하는 쿼리
+  const sqlQuery =
+    "UPDATE BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ?, UPDATER_ID = ? WHERE BOARD_ID = ?;";
+  db.query(sqlQuery, [title, content, updaterId, id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
 });
