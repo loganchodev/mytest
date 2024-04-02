@@ -91,6 +91,17 @@ app.post("/update", (req, res) => {
   });
 });
 
+// 게시글 삭제
+app.post("/delete", (req, res) => {
+  const id = req.body.boardIdList; // 요청 바디에서 삭제할 게시글 ID 리스트를 가져옴
+
+  //  게시글 ID로 데이터 삭제하는 쿼리
+  const sqlQuery = `DELETE FROM BOARD WHERE BOARD_ID IN (${id})`;
+  db.query(sqlQuery, (err, result) => {
+    res.send(result);
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
 });
